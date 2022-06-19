@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
     res.send(`
       <h1>Full Cycle Rocks!</h1>
       <ul>
-        ${!!results.length ? results.map(el => `<li>${el.name}</li>`).join('') : ''}
+        ${!!results.length ? results.map(el => `<li> ${el.name} </li>`).join('') : ''}
       </ul>
     `)
   })
