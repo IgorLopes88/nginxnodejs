@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: ./.docker/nginx
+    container_name: nginx
+    restart: always
+    ports: 
+      - '8080:80'
+    depends_on:
+      - app
+    networks:
+      - redeinterna
+    links:
+      - app:app
+  
+  app:
+    container_name: app
+    restart: always
+    volumes:
+      - ./src:/app
+    build:
+      context: ./.docker/nodejs
+    depends_on:
+      - mysql
+    networks:
+      - redeinterna
+
+  mysql:
+    image: mysql:5.7.26
+    container_name: "mysql"
+    command:
+      --innodb-use-native-aio=0
+      --ignore-db-dir=lost+found
+    volumes:
+      - .docker/db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    tty: true
+    environment:
+      - MYSQL_DATABASE=fullcycle
+      - MYSQL_ROOT_PASSWORD=root
+    restart: always
+    networks:
+      - redeinterna
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "pma"
+    ports:
+      - 8000:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=root
+    links:
+      - mysql
+    restart: always
+    networks:
+      - redeinterna
+
+networks:
+  redeinterna:
+    driver: bridge
