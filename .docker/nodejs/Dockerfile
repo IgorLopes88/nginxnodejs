@@ -1,8 +1,8 @@
-FROM node:14 AS builder
+FROM node AS builder
 
 WORKDIR /app
 
-RUN npm install
+# RUN npm install
 
 EXPOSE 3000
 
